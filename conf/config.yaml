@@ -1,0 +1,30 @@
+defaults:
+  - _self_
+  - trainer: lightning
+  - logger: default_logger
+  - callbacks: default_callbacks
+
+  - system: none
+  - launcher: local
+  - override hydra/hydra_logging: none
+  - override hydra/job_logging: none
+
+model_name: "base"
+test: false
+
+seed: 0
+num_workers: 4
+batch_size: 8
+base_batch_size: ${batch_size} # to scale learning rate
+resume: false
+ckpt: null
+
+nodes: 1
+gpus: 1
+
+debug: false
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null

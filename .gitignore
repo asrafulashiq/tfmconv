@@ -1,0 +1,36 @@
+*.venv
+.cenv
+*.vscode
+*.pth
+*.pkl
+*.jpg
+*.png
+.backup
+__pycache__
+*.pyc
+**/outputs
+**/output
+**/logs
+**/test_logs
+**/log_slurm
+**/*.pyc
+*.ply
+*.pcd
+data/
+
+# custom
+*.pkl
+*.pkl.json
+*.log.json
+
+# Pytorch
+*.pth
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/

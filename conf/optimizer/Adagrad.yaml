@@ -1,0 +1,6 @@
+# @package _global_
+
+optimizer:
+  _target_: "torch.optim.Adagrad"
+  lr: 0.0005
+  weight_decay: 0

@@ -1,0 +1,36 @@
+# @package _global_
+
+defaults:
+  - /dataset: imagenet
+  - _self_
+
+system:
+  _target_: system.system_res_simple.LightningSystem
+  _recursive_: false
+
+model_name: "res_simple"
+batch_size: 32
+num_workers: 4
+
+base_lr: 0.1
+base_batch_size: 256
+
+model:
+  _target_: timm.models.create_model
+  model_name: resnet50
+
+trainer:
+  max_epochs: 90
+
+optimizer:
+  _target_: "torch.optim.SGD"
+  lr: 0.01
+  momentum: 0.9
+  dampening: 0
+  weight_decay: 1e-4
+  nesterov: False
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.StepLR
+  step_size: 30
+  gamma: 0.1

@@ -1,0 +1,20 @@
+# @package _global_
+
+launcher:
+  name: "slurm"
+  time: 6
+  nodes: ${nodes}
+  cpus_per_task: 6
+
+  partition: null
+  auto: true
+  from_slurm: false
+
+  mem_per_cpu: 15000
+  log_root: log_slurm
+  job: ${model_name}
+  gpus: ${gpus}
+  email: "asrafulashiq@gmail.com"
+
+trainer:
+  terminate_on_nan: True
