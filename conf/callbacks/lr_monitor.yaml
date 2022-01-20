@@ -1,5 +1,5 @@
 # @package _global_
 callbacks:
   lr_logger:
-    _target_: callbacks.lr_monitor.LearningRateMonitor
+    _target_: pytorch_lightning.callbacks.LearningRateMonitor
     logging_interval: "epoch"

@@ -42,6 +42,7 @@ class LightningSystem(LightningModule):
                 self.trainer.accumulate_grad_batches *
                 num_proc) / self.hparams.base_batch_size
             print(f"Learning rate set to {self.hparams.optimizer.lr}")
+
     # --------------------------------- training --------------------------------- #
     def forward(self, x):
         return self.network(x)

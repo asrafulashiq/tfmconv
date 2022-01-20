@@ -1,4 +1,4 @@
 # @package _global_
 defaults:
-  - checkpoint
+  - checkpoint_lightning
   - lr_monitor

@@ -1,4 +1,3 @@
-# type: ignore[override]
 from typing import Any, Callable
 import os
 from pytorch_lightning import LightningDataModule
@@ -37,7 +36,6 @@ class ImagenetDataModule(LightningDataModule):
         super().__init__(*args, **kwargs)
 
         self.image_size = image_size
-        self.dims = (3, self.image_size, self.image_size)
         self.data_dir = data_dir
         self.num_workers = num_workers
         self.batch_size = batch_size
