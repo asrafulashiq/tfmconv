@@ -2,6 +2,7 @@
 
 defaults:
   - /dataset: imagenet
+  - /callbacks/ema_callback
   - _self_
 
 system:

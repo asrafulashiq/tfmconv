@@ -1,0 +1,6 @@
+# @package _global_
+
+callbacks:
+  ema_callback:
+    _target_: callbacks.ema_callback.EMA
+    decay: 0.999
