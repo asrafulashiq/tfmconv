@@ -52,7 +52,8 @@ def main(params: DictConfig, *args, **kwargs):
     trainer = pl.Trainer.from_argparse_args(
         argparse.Namespace(**params.trainer),
         logger=logger,
-        callbacks=callbacks)
+        callbacks=callbacks,
+    )
 
     if params.test:
         trainer.test(lightning_model, datamodule=dm)
