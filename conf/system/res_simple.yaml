@@ -12,16 +12,12 @@ model_name: "res_simple"
 batch_size: 32
 num_workers: 4
 
-base_lr: 0.1
-base_batch_size: 256
-
+# --------------------------------- backbone --------------------------------- #
 model:
   _target_: timm.models.create_model
   model_name: resnet50
 
-trainer:
-  max_epochs: 90
-
+# --------------------------------- optimizer -------------------------------- #
 optimizer:
   _target_: "torch.optim.SGD"
   lr: 0.01
@@ -30,7 +26,15 @@ optimizer:
   weight_decay: 1e-4
   nesterov: False
 
+# --------------------------------- scheduler -------------------------------- #
 scheduler:
   _target_: torch.optim.lr_scheduler.StepLR
   step_size: 30
   gamma: 0.1
+
+# ------------------------------ training params ----------------------------- #
+base_lr: 0.1
+base_batch_size: 256
+
+trainer:
+  max_epochs: 90

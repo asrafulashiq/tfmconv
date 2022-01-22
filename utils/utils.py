@@ -6,8 +6,15 @@ import os
 import re
 import subprocess
 
+import rich.syntax
+import rich.tree
+from pytorch_lightning.utilities import rank_zero_only
+from typing import List, Sequence
+from omegaconf import DictConfig, OmegaConf
+
 # NOTE reguster resolver for step lr scheduler, requires omegaconf: 2.1.0.dev26
-OmegaConf.register_resolver("multiply", lambda x, y: int(float(x) * float(y)))
+OmegaConf.register_new_resolver("multiply",
+                                lambda x, y: int(float(x) * float(y)))
 
 
 def get_git_revision_hash() -> str:
@@ -106,13 +113,6 @@ def configure_loguru(logger, logfile=None):
                    enqueue=True)
 
 
-import rich.syntax
-import rich.tree
-from pytorch_lightning.utilities import rank_zero_only
-from typing import List, Sequence
-from omegaconf import DictConfig, OmegaConf
-
-
 @rank_zero_only
 def print_config(
     config: DictConfig,
@@ -184,3 +184,23 @@ def concat_all_gather(tensor):
 
     output = torch.cat(tensors_gather, dim=0)
     return output
+
+
+def cosine_scheduler(base_value,
+                     final_value,
+                     epochs,
+                     niter_per_ep,
+                     warmup_epochs=0,
+                     start_warmup_value=0):
+    warmup_schedule = np.array([])
+    warmup_iters = int(np.ceil(warmup_epochs * niter_per_ep))
+    if warmup_epochs > 0:
+        warmup_schedule = np.linspace(start_warmup_value, base_value,
+                                      warmup_iters)
+
+    iters = np.arange(int(np.ceil(epochs * niter_per_ep)) - warmup_iters)
+    schedule = final_value + 0.5 * (base_value - final_value) * (
+        1 + np.cos(np.pi * iters / len(iters)))
+
+    schedule = np.concatenate((warmup_schedule, schedule))
+    return schedule

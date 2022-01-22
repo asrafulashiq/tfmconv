@@ -41,6 +41,10 @@ class LightningSystem(LightningModule):
     def training_step(self, batch, batch_idx):
         """ implement your own training step """
 
+    def get_lr(self):
+        optimizer = self.optimizers()
+        return optimizer.param_groups[0]['lr']
+
     # ----------------------------------- eval ----------------------------------- #
     def validation_step(self, batch, batch_idx, dataset_idx=0):
         pass

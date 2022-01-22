@@ -21,6 +21,11 @@ def main(params: DictConfig, *args, **kwargs):
     # Init datamodule
     dm = hydra.utils.instantiate(params.dataset.instance)
 
+    # transform
+    dm.train_transforms = hydra.utils.instantiate(params.train_transform)
+    dm.val_transforms = hydra.utils.instantiate(params.val_transform)
+    dm.test_transforms = hydra.utils.instantiate(params.val_transform)
+
     # Init PyTorch Lightning model ⚡
     lightning_model = hydra.utils.instantiate(params.system,
                                               hparams=params,

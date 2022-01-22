@@ -15,7 +15,7 @@ trainer:
   resume_from_checkpoint: null
   benchmark: true
   reload_dataloaders_every_epoch: False
-  terminate_on_nan: False
+  detect_anomaly: true
   automatic_optimization: null
   deterministic: False
   num_sanity_val_steps: 0

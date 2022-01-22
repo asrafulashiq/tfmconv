@@ -19,6 +19,10 @@ base_batch_size: ${batch_size} # to scale learning rate
 resume: false
 ckpt: null
 
+train_transform: null
+val_transform: null
+test_transform: ${val_transform}
+
 nodes: 1
 gpus: 1
 
