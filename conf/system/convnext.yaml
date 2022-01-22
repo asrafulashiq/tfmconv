@@ -11,7 +11,7 @@ system:
 
 model_name: "convnext"
 batch_size: 128
-num_workers: 4
+num_workers: 8
 
 # --------------------------------- backbone --------------------------------- #
 model:
