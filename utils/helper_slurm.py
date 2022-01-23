@@ -5,7 +5,7 @@ import os, sys
 import subprocess
 import platform
 import datetime
-from typing import Callable, List
+from typing import Callable
 from colorama import init, Fore
 from omegaconf.dictconfig import DictConfig
 
@@ -144,20 +144,12 @@ def run_cluster(cfg: DictConfig, fn_main: Callable):
         extra = ""
         node = platform.processor()
 
-        if slurm_params.partition is not None:
-            extra = f"#SBATCH --partition {slurm_params.partition} \n"
-            # raise ValueError("Do not specify partition in AIMOS")
+        # if slurm_params.partition is not None:
+        #     extra = f"#SBATCH --partition {slurm_params.partition} \n"
+        #     # raise ValueError("Do not specify partition in AIMOS")
 
-        # if node == "x86_64":
-        #     PYTHON = "/gpfs/u/home/LLLD/LLLDashr/scratch/miniconda3x86_64/envs/fs_cdfsl/bin/python"
-        # elif node == "ppc64le":
-        #     PYTHON = "/gpfs/u/home/LLLD/LLLDashr/scratch/miniconda3ppc64le/envs/fs_cdfsl/bin/python"
-        #     extra = extra + "#SBATCH --partition dcs,rpi\n"
-
-        # if node == "ppc64le":
-        #     extra = extra + "#SBATCH --partition dcs,rpi,el8,el8-rpi\n"
-
-    # extra = extra + "conda activate fs_cdfsl \n"  # FIXME check
+    extra = extra + f"source ~/scratch/miniconda3{node}/etc/profile.d/conda.sh; \n"
+    extra = extra + "conda activate pytorch_1.9.1 \n"
 
     python_cmd = get_argv()
 
@@ -181,7 +173,6 @@ def run_cluster(cfg: DictConfig, fn_main: Callable):
         module=loaded_module,
         main_cmd=full_command,
     )
-    # print(Fore.LIGHTWHITE_EX + cmd_to_sbatch)
     script = "{}/{}.sh".format(slurm_files_log_path, slurm_params.job)
     with open(script, 'w') as f:
         print(cmd_to_sbatch, file=f, flush=True)

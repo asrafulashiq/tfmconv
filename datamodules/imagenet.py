@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 import os
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
@@ -19,6 +19,7 @@ class ImagenetDataModule(LightningDataModule):
         shuffle: bool = True,
         pin_memory: bool = True,
         drop_last: bool = False,
+        crop_pct: Optional[float] = None,
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -42,6 +43,7 @@ class ImagenetDataModule(LightningDataModule):
         self.shuffle = shuffle
         self.pin_memory = pin_memory
         self.drop_last = drop_last
+        self.crop_pct = crop_pct
 
     @property
     def num_classes(self) -> int:
@@ -116,8 +118,12 @@ class ImagenetDataModule(LightningDataModule):
         """The standard imagenet transforms for validation.
         """
 
+        if self.crop_pct is None:
+            self.crop_pct = 224 / 256
+        size = int(self.image_size / self.crop_pct)
         preprocessing = transform_lib.Compose([
-            transform_lib.Resize(self.image_size + 32),
+            transform_lib.Resize(
+                size, interpolation=transform_lib.InterpolationMode.BICUBIC),
             transform_lib.CenterCrop(self.image_size),
             transform_lib.ToTensor(),
             imagenet_normalization(),
