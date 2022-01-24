@@ -29,7 +29,7 @@ trainer:
 
   # progress_bar_refresh_rate: 5
   log_every_n_steps: 10
-  check_val_every_n_epoch: 1
+  check_val_every_n_epoch: 5
   weights_save_path: outputs/ckpt/${model_name}
   max_epochs: 100
   gpus: ${gpus}
