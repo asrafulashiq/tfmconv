@@ -11,10 +11,11 @@ defaults:
 
 model_name: "base"
 test: false
+print_conf: true
 
 seed: 0
 num_workers: 4
-batch_size: 8
+batch_size: 32
 base_batch_size: ${batch_size} # to scale learning rate
 resume: false
 ckpt: null

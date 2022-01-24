@@ -98,7 +98,7 @@ def refine_args(params):
         if params.test:
             params.ckpt = params.trainer.resume_from_checkpoint
 
-    print("GPU Info :", torch.cuda.get_device_properties('cuda:0'))
+    print("GPU Info :", torch.cuda.get_device_properties('cuda'))
 
     return params
 
