@@ -8,7 +8,7 @@ system:
   _target_: system.system_res_simple.LightningSystem
   _recursive_: false
 
-model_name: "res_simple"
+model_name: tmp_res_simple
 batch_size: 32
 num_workers: 4
 

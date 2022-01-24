@@ -47,7 +47,7 @@ def main(params: DictConfig, *args, **kwargs):
         hydra.utils.instantiate(callback_conf)
         for _, callback_conf in params["callbacks"].items()
     ] if "callbacks" in params and params.callbacks else []
-    callbacks.append(RichProgressBar())
+    # callbacks.append(RichProgressBar())
 
     trainer = pl.Trainer.from_argparse_args(
         argparse.Namespace(**params.trainer),

@@ -9,52 +9,49 @@ system:
   _target_: system.system_timm_base.LightningSystem
   _recursive_: false
 
-model_name: tmp_convnext
+model_name: "tmp_rsb"
 batch_size: 128
-num_workers: 8
+num_workers: 4
 
 # --------------------------------- backbone --------------------------------- #
 model:
   _target_: timm.models.create_model
-  model_name: convnext_tiny
+  model_name: resnet50
   pretrained: false
   num_classes: 1000
-  drop_path_rate: 0.1
-  head_init_scale: 1.0
+  drop_path_rate: 0 # for a1 and a2: 0.05
 
 # ------------------------------ transformation ------------------------------ #
 image_size: 224
-label_smoothing: 0.1
+label_smoothing: 0
 train_transform:
   _target_: timm.data.create_transform
-  input_size: ${image_size}
+  input_size: 160
   is_training: true
-  color_jitter: 0.4
-  auto_augment: rand-m9-mstd0.5-inc1
+  color_jitter: null
+  auto_augment: rand-m6-mstd0.5-inc1
   interpolation: bicubic
-  re_prob: 0.25
-  re_mode: pixel
-  re_count: 1
+
+val_transform:
+  _target_: timm.data.create_transform
+  input_size: ${image_size}
+  is_training: False
+  interpolation: bicubic
+  crop_pct: 0.95
 
 mixup_fn:
   _target_: timm.data.Mixup
-  mixup_alpha: 0.8
+  mixup_alpha: 0.1
   cutmix_alpha: 1.0
-  cutmix_minmax: null
-  prob: 1
-  switch_prob: 0.5
-  mode: batch
   label_smoothing: ${label_smoothing}
   num_classes: 1000
 
 # --------------------------------- optimizer -------------------------------- #
 optimizer:
   _target_: timm.optim.create_optimizer_v2
-  opt: adamw
-  lr: 4e-3
-  momentum: 0.9
-  weight_decay: 0.05
-  filter_bias_and_bn: true
+  opt: lamb
+  lr: 8e-3
+  weight_decay: 0.02
 
 # --------------------------------- scheduler -------------------------------- #
 lr_schedule:
@@ -63,31 +60,18 @@ lr_schedule:
   final_value: 1e-6
   epochs: ${trainer.max_epochs}
   niter_per_ep: null
-  warmup_epochs: 20
+  warmup_epochs: 5
   start_warmup_value: 0
 
-wd_schedule:
-  _target_: utils.utils.cosine_scheduler
-  base_value: ${optimizer.weight_decay}
-  final_value: ${optimizer.weight_decay}
-  epochs: ${trainer.max_epochs}
-  niter_per_ep: null
-
-# momentum_schedule:
-#   _target_: utils.utils.cosine_scheduler
-#   base_value: 0.996
-#   final_value: 1
-#   epochs: ${trainer.max_epochs}
-#   niter_per_ep: null
+wd_schedule: null
 
 # ------------------------------ training params ----------------------------- #
 criterion:
-  _target_: timm.loss.SoftTargetCrossEntropy
-  # _target_: timm.loss.LabelSmoothingCrossEntropy
-  # smoothing: ${label_smoothing}
+  _target_: timm.loss.BinaryCrossEntropy
 
-base_lr: 4e-3
-base_batch_size: 4096
+base_lr: 8e-3
+base_batch_size: 2048
 
 trainer:
-  max_epochs: 300
+  max_epochs: 100
+  precision: 16

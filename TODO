@@ -1,2 +1,6 @@
 ☐ python main.py system=convnext batch_size=128 gpus=8 nodes=4 \
     model_name=convnext_ls_fp16 launcher=slurm trainer.precision=16
+
+
+☐ python main.py system=rsb_a3 batch_size=256 gpus=4 nodes=1 \
+    model_name=rsb_a3 launcher=slurm trainer.precision=16
