@@ -98,7 +98,11 @@ def refine_args(params):
         if params.test:
             params.ckpt = params.trainer.resume_from_checkpoint
 
-    print("GPU Info :", torch.cuda.get_device_properties('cuda'))
+    if 'LOCAL_RANK' in os.environ:
+        device_name = f'cuda:{os.environ["LOCAL_RANK"]}'
+    else:
+        device_name = 'cuda'
+    print("GPU Info :", torch.cuda.get_device_properties(device_name))
 
     return params
 
