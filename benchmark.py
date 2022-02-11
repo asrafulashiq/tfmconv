@@ -47,4 +47,4 @@ def benchmark(model,
 
 
 model = efficientnet_b0.eval().to("cuda")
-benchmark(model, input_shape=(8, 3, 224, 224), nruns=100)
+benchmark(model, input_shape=(8, 3, 224, 224), nruns=500)
