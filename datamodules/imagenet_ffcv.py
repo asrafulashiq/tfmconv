@@ -1,6 +1,7 @@
 from typing import Any, List, Optional
 import os
 from pytorch_lightning import LightningDataModule
+import torch
 from torch.utils.data import DataLoader
 from pl_bolts.transforms.dataset_normalizations import imagenet_normalization
 import torchvision
@@ -8,8 +9,8 @@ from timm.models.layers import to_2tuple
 
 
 from ffcv.loader import Loader, OrderOption
-from ffcv.transforms import ToTensor, ToTorchImage, RandomHorizontalFlip
-from ffcv.fields.decoders import RandomResizedCropRGBImageDecoder, CenterCropRGBImageDecoder
+from ffcv.transforms import ToTensor, ToTorchImage, RandomHorizontalFlip, Convert
+from ffcv.fields.decoders import RandomResizedCropRGBImageDecoder, CenterCropRGBImageDecoder, IntDecoder
 from ffcv.pipeline.operation import Operation
 from ffcv.loader import Loader, OrderOption
 from ffcv.transforms.common import Squeeze
@@ -71,7 +72,7 @@ class ImagenetDataModule(LightningDataModule):
     def train_dataloader(self) -> DataLoader:
         """Uses the train split of imagenet2012"""
         label_pipeline: List[Operation] = [IntDecoder(), ToTensor(), Squeeze()]
-        image_pipeline: self.train_transform(
+        image_pipeline = self.train_transform(
         ) if self.train_transforms is None else self.train_transforms
         
         loader = Loader(
@@ -90,8 +91,8 @@ class ImagenetDataModule(LightningDataModule):
 
     def val_dataloader(self) -> DataLoader:
         label_pipeline: List[Operation] = [IntDecoder(), ToTensor(), Squeeze()]
-        image_pipeline: self.train_transform(
-        ) if self.train_transforms is None else self.train_transforms
+        image_pipeline = self.val_transform(
+        ) if self.val_transforms is None else self.val_transforms
 
         loader = Loader(
             self.val_beton,
@@ -109,10 +110,34 @@ class ImagenetDataModule(LightningDataModule):
 
 
     def test_dataloader(self) -> DataLoader:
-        """Uses the validation split of imagenet2012 for testing."""
-        transforms = self.val_transform(
-        ) if self.test_transforms is None else self.test_transforms
+        return self.val_dataloader()
 
-        dataset = torchvision.datasets.ImageFolder(os.path.join(
-            self.data_dir, "val"),
-                                                   transform=transfo
+    def train_transform(self) -> List[Operation]:
+        """The standard imagenet transforms.
+        """
+        image_pipeline: List[Operation] = [
+            RandomResizedCropRGBImageDecoder(to_2tuple(self.image_size), scale=(0.08, 1.0)),
+            RandomHorizontalFlip(),   
+            ToTensor(),
+            ToTorchImage(),
+            Convert(torch.float16),
+            imagenet_normalization()
+            ]
+        return image_pipeline
+
+    def val_transform(self) -> List[Operation]:
+        """The standard imagenet transforms for validation.
+        """
+
+        if self.crop_pct is None:
+            self.crop_pct = 224 / 256
+        size = int(self.image_size / self.crop_pct)
+        image_pipeline: List[Operation] = [
+            CenterCropRGBImageDecoder(to_2tuple(size), ratio=self.crop_pct),
+            ToTensor(),
+            ToTorchImage(),
+            Convert(torch.float16),
+            imagenet_normalization()
+            ]
+
+        return image_pipeline

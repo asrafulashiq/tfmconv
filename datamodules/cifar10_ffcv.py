@@ -114,4 +114,13 @@ class CIFAR10DataModule(VisionDataModule):
         loader = Loader(
             self.val_beton_path,
             batch_size=self.batch_size,
-            order=OrderOption.SEQUE
+            order=OrderOption.SEQUE,
+            num_workers=self.num_workers,
+            drop_last=self.drop_last,
+            distributed=False,
+            pipelines={
+                'image': image_pipeline,
+                'label': label_pipeline
+            }
+        )
+        return loader
