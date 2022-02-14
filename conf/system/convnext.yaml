@@ -82,9 +82,9 @@ wd_schedule:
 
 # ------------------------------ training params ----------------------------- #
 criterion:
-  _target_: timm.loss.SoftTargetCrossEntropy
-  # _target_: timm.loss.LabelSmoothingCrossEntropy
-  # smoothing: ${label_smoothing}
+  # _target_: timm.loss.SoftTargetCrossEntropy
+  _target_: timm.loss.LabelSmoothingCrossEntropy
+  smoothing: ${label_smoothing}
 
 base_lr: 4e-3
 base_batch_size: 4096

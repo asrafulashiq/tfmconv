@@ -1,0 +1,1 @@
+python main.py system=convnext trainer.gpus=1 trainer.limit_train_batches=2 batch_size=64 trainer.check_val_every_n_epoch=100 model_name=tmp trainer.precision=16 trainer.profiler=simple trainer.max_epochs=10 trainer.benchmark=true trainer.gpus=1 num_workers=16 mixup_fn=null

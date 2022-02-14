@@ -1,0 +1,13 @@
+# @package _global_
+
+dataset:
+  name: imagenet
+  instance:
+    _target_: datamodules.imagenet.ImagenetDataModule
+    data_dir: data/imagenet1k_ffcv
+    batch_size: ${batch_size}
+    num_workers: ${num_workers}
+    shuffle: true
+    pin_memory: true
+    drop_last: true
+    strategy: ${trainer.strategy}
