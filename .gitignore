@@ -16,7 +16,7 @@ __pycache__
 **/*.pyc
 *.ply
 *.pcd
-data/
+data
 
 # custom
 *.pkl
